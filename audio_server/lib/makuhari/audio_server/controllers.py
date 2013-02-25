@@ -67,14 +67,14 @@ class ReceiverController(Controller):
 
   def _GenAudioBackend(self):
     if self.model.type == 'streaming':
-      return backend.StreamingReceiver(self.GetPath())
+      return backend.StreamingReceiver(self.GetPath(), self.model)
     elif self.model.type == 'demo':
-      r = backend.DemoReceiver(self.GetPath())
+      r = backend.DemoReceiver(self.GetPath(), self.model)
       import os.path
       self.demo_path = os.path.abspath('demo/test_cbr.mp3')
       return r
     elif self.model.type == 'demo_Connect':
-      r = backend.DemoReceiver(self.GetPath())
+      r = backend.DemoReceiver(self.GetPath(), self.model)
       import os.path
       self.demo_path = os.path.abspath('demo/Connect.mp3')
       return r
@@ -107,9 +107,9 @@ class SpeakerController(Controller):
 
   def _GenAudioBackend(self):
     if self.model.type == 'pysical':
-      return backend.PhysicalSpeaker(self.GetPath())
+      return backend.PhysicalSpeaker(self.GetPath(), self.model)
     elif self.model.type == 'rtsp':
-      b = backend.RtspServerSpeaker(self.GetPath())
+      b = backend.RtspServerSpeaker(self.GetPath(), self.model)
       b.Play()
       return b
 

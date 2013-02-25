@@ -16,16 +16,19 @@ class Model(object):
 
 class Device(Model):
 
-  def __init__(self, name, description, type, transport = None):
+  def __init__(self, name, description, type, transport=None, bitrates=None):
     super(Device, self).__init__(name, description)
     self.type = type
     self.transport = transport
+    self.bitrates = bitrates
 
   def ToJson(self):
     d = super(Device, self).ToJson()
     d['type'] = self.type
     if self.transport:
       d['transport'] = self.transport
+    if self.bitrates:
+      d['bitrates'] = self.bitrates
     return d
 
 

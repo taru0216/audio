@@ -22,13 +22,15 @@ def init():
   plumbing.start()
 
 def _run_jack_plumbing():
+  #os.system('while true; do sleep 1; jack.plumbing -d demo/plumbing.conf; jack_lsp -c; done')
   os.system('jack.plumbing demo/plumbing.conf')
 
 class AudioBackend(object):
 
-  def __init__(self, name):
+  def __init__(self, name, model):
     super(AudioBackend, self).__init__()
     self.name = name
+    self.model = model
     self._InitGlibLoop()
     self._InitGstreamer()
     self._InitBus()
@@ -143,6 +145,9 @@ class RtspServerSpeaker(AudioBackend):
   Mapping = Server.get_media_mapping()
   Loop = None
 
+  Bitrates = [ 48000, 64000, 96000, 128000 ]
+
+
   ActiveFactories = {}
 
   @classmethod
@@ -160,13 +165,43 @@ class RtspServerSpeaker(AudioBackend):
   def IsPlaying(self):
     return self.__class__.ActiveFactories.has_key(self.endpoint)
 
-  def Play(self, path=None):
+  def _GenFactory(self, bitrate):
+    launch = "jackaudiosrc client-name=%s_%s?bitrate=%s connect=0 name=jacksrc ! audioconvert ! ffenc_aac bitrate=%s ! queue ! rtpmp4apay name=pay0" % (CLIENT_NAME, self.name, bitrate, bitrate)
+
     factory = gst.rtspserver.MediaFactory()
     factory.set_shared(True)
-    factory.set_launch("jackaudiosrc client-name=%s_%s connect=0 name=jacksrc ! audioconvert ! ffenc_aac bitrate=80000 ! queue ! rtpmp4apay name=pay0" % (CLIENT_NAME, self.name))
+    factory.set_launch(launch)
+
+    return factory
+
+  def _RegisterFactory(self, factory, bitrate, default=False):
+      endpoint = self.endpoint
+      if not default:
+        endpoint = "%s/%s" % (self.endpoint, bitrate)
+      self.__class__.Mapping.add_factory(endpoint, factory)
+      self.factory_variants[endpoint] = factory
+
+  def Play(self, path=None):
+
     self.endpoint = "/%s" % self.name
-    self.__class__.Mapping.add_factory(self.endpoint, factory)
-    self.__class__.ActiveFactories[self.endpoint] = factory
+    self.factory_variants = {}
+
+    default_bitrate = sorted(self.__class__.Bitrates)[-1]
+    default_factory = None
+    
+    for bitrate in self.__class__.Bitrates:
+      factory = self._GenFactory(bitrate)
+      if bitrate == default_bitrate:
+        default_factory = factory
+      self._RegisterFactory(factory, bitrate)
+
+    if default_factory:
+      self._RegisterFactory(default_factory, default_bitrate, default=True)
+
+    self.__class__.ActiveFactories[self.endpoint] = self.factory_variants
+
+    self.model.bitrates = self.__class__.Bitrates
+
     self.__class__._RunServer()
 
   def Terminate(self):
