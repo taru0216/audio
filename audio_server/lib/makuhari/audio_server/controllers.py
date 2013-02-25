@@ -2,9 +2,7 @@
 
 
 import backend
-import json
-import logging
-import models
+import os.path
 import urlparse
 import views
 
@@ -42,14 +40,15 @@ class AudioController(Controller):
   def GetPath(self):
     return 'audio/%s/' % self.model.name
 
+  # FIXME(taru0216) : Fix this to work
   def do_PUT(self, handler):
     name = handler.path.split('/')[2]
-    audio = Audio(name, self.GenAudioURL(name))
+    # audio = Audio(name, self.GenAudioURL(name))
 
     if name in self.audios:
       return self.ClientError(409, "audio '%s' already exists" % name)
 
-    self._AddAudio(audio)
+    #self._AddAudio(audio)
     self.send_response(201)
     self.send_header('Content-Type', 'application/json')
     self.end_headers()
@@ -70,12 +69,10 @@ class ReceiverController(Controller):
       return backend.StreamingReceiver(self.GetPath(), self.model)
     elif self.model.type == 'demo':
       r = backend.DemoReceiver(self.GetPath(), self.model)
-      import os.path
       self.demo_path = os.path.abspath('demo/test_cbr.mp3')
       return r
     elif self.model.type == 'demo_Connect':
       r = backend.DemoReceiver(self.GetPath(), self.model)
-      import os.path
       self.demo_path = os.path.abspath('demo/Connect.mp3')
       return r
 

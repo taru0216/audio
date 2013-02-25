@@ -2,7 +2,6 @@
 
 
 import json
-import urlparse
 
 
 class JsonView(object):

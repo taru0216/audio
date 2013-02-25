@@ -22,7 +22,7 @@ def init():
   plumbing.start()
 
 def _run_jack_plumbing():
-  #os.system('while true; do sleep 1; jack.plumbing -d demo/plumbing.conf; jack_lsp -c; done')
+  # os.system('while true; do sleep 1; jack.plumbing -d demo/plumbing.conf; jack_lsp -c; done')
   os.system('jack.plumbing demo/plumbing.conf')
 
 class AudioBackend(object):
@@ -104,7 +104,7 @@ class DemoReceiver(AudioBackend):
     jacksink.set_property("connect", 0)
 
     self.player.set_property("video-sink", fakesink)
-    #self.player.set_property("audio-sink", fakesink)
+    # self.player.set_property("audio-sink", fakesink)
     self.player.set_property("audio-sink", jacksink)
 
   def OnMessage(self, bus, message):
@@ -188,7 +188,7 @@ class RtspServerSpeaker(AudioBackend):
 
     default_bitrate = sorted(self.__class__.Bitrates)[-1]
     default_factory = None
-    
+
     for bitrate in self.__class__.Bitrates:
       factory = self._GenFactory(bitrate)
       if bitrate == default_bitrate:

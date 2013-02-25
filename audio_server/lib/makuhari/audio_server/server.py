@@ -44,7 +44,7 @@ class AudioServerHandler(BaseHTTPRequestHandler):
     path = urlparse(self.path)[2]
     cls = self.__class__
     endpoints = sorted(cls.Controllers.keys(),
-                       cmp=lambda x,y: cmp(len(y),len(x)))
+                       cmp=lambda x, y: cmp(len(y), len(x)))
     for endpoint in endpoints:
       endpoint_path = '/' + urlparse(endpoint)[2]
       if path.find(endpoint_path) == 0:
@@ -63,7 +63,7 @@ class AudioServerHandler(BaseHTTPRequestHandler):
 
   def do_GET(self):
     return self._DoMethod(self._LookupController(), 'do_GET')
- 
+
   def do_POST(self):
     return self._DoMethod(self._LookupController(), 'do_POST')
 
@@ -75,19 +75,19 @@ class AudioServerHandler(BaseHTTPRequestHandler):
 
   def GetRoot(self):
     return 'http://%s/' % self.__class__.AcceptFQDN
- 
-  def PutAudio(self):
-    name = self.path.split('/')[2]
-    audio = Audio(name, self.GenAudioURL(name))
 
-    if name in self.audios:
-      return self.ClientError(409, "audio '%s' already exists" % name)
-
-    self._AddAudio(audio)
-    self.send_response(201)
-    self.send_header('Content-Type', 'application/json')
-    self.end_headers()
-    self.wfile.write(self.audios[name].ToJson())
+#  def PutAudio(self):
+#    name = self.path.split('/')[2]
+#    audio = Audio(name, self.GenAudioURL(name))
+#
+#    if name in self.audios:
+#      return self.ClientError(409, "audio '%s' already exists" % name)
+#
+#    self._AddAudio(audio)
+#    self.send_response(201)
+#    self.send_header('Content-Type', 'application/json')
+#    self.end_headers()
+#    self.wfile.write(self.audios[name].ToJson())
 
   def ClientError(self, status=404, msg='Not found\n'):
     self.send_error(code=status, message=msg)
@@ -95,7 +95,7 @@ class AudioServerHandler(BaseHTTPRequestHandler):
 
 def main():
   try:
-    server = HTTPServer(('',8888), AudioServerHandler)
+    server = HTTPServer(('', 8888), AudioServerHandler)
     print 'server started'
     server.serve_forever()
   except KeyboardInterrupt:

@@ -8,6 +8,6 @@ setup(name='Makuhari',
       author='Masato Taruishi',
       author_email='taru0216@gmail.com',
       url=None,
-      package_dir = {'': 'lib'},
+      package_dir={'': 'lib'},
       packages=['makuhari', 'makuhari.audio_server'],
      )

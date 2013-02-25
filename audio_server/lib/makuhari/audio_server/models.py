@@ -1,9 +1,6 @@
 #!/usr/bin/python
 
 
-import json
-
-
 class Model(object):
 
   def __init__(self, name, description):
@@ -68,7 +65,7 @@ class Audio(Model):
     d['receivers'] = {}
     for name, receiver in self.receivers.iteritems():
       d['receivers'][name] = receiver.ToJson()
-      
+
     d['speakers'] = {}
     for name, speaker in self.speakers.iteritems():
       d['speakers'][name] = speaker.ToJson()
