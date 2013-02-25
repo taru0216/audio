@@ -1,0 +1,22 @@
+{
+  "content-type": "application/json+wave+audio",
+  "version": "dev",
+  "id": "demo",
+  "url": "http://makuhari2.cleartouch.jp:8888/audio/demo/",
+  "receivers": {
+    "line0": {
+      "description": "Streaming Demo Line Input",
+      "type": "streaming",
+      "transport":
+        "http://makuhari2.cleartouch.jp:8888/audio/demo/receiver/line0"
+    }
+  },
+  "speakers": {
+    "speaker0": {
+      "description": "Demo Streaming Output",
+      "type": "streaming",
+      "transport":
+        "rtsp://makuhari2.cleartouch.jp:8554/audio/demo/speaker/speaker0"
+    }
+  }
+}
